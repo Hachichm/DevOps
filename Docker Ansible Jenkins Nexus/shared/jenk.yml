@@ -1,0 +1,47 @@
+---
+- name: install add-apt-repository
+  hosts: jenkins
+  remote_user: vagrant
+  become: yes
+
+  tasks:
+  - name: update repo
+    apt: update_cache=yes
+
+  - name: install java
+    apt: name=python-software-properties
+
+  - name: Add Java 8 repository
+    apt_repository: repo='ppa:webupd8team/java'
+
+  - name: Agree to oracle license
+    debconf: name=oracle-java8-installer question=shared/accepted-oracle-license-v1-1 vtype=select value=true
+
+  - name: Install Java 8
+    apt: name=oracle-java8-installer force=yes
+
+  - name: install maven
+    apt: name=maven state=present
+
+  - name: install git
+    apt: name=git state=present
+
+  - name: test java is installed
+    command: java -version
+    changed_when: false
+  
+  - name: downlaod jenkins 
+    shell: wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+    shell: echo deb http://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list 
+
+  - name: updating APT package cache
+    action: apt update_cache=yes
+
+  - name: installing jenkins 
+    apt:
+      name: jenkins 
+      state: present 
+      install_recommends: yes
+      
+      5674 jenkins
+      5674 

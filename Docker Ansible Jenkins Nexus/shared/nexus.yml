@@ -1,0 +1,13 @@
+---
+- name: pull nexus docker container 
+  hosts: hosts 
+  remote_user: vagrant 
+  become: yes
+  tasks: 
+
+  - name: pull nexus
+    docker_container:
+      name: nexuscontainer
+      image: sonatype/nexus 
+      ports: 
+       - 5799:8081
